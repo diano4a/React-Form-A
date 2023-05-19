@@ -8,12 +8,12 @@
   width: 640px;
   border: 1px solid #f2efef;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .form-title {
-  margin-top: 20px;
+  margin-top: 40px;
   font-weight: 500;
 }
 
@@ -40,14 +40,46 @@
   outline: none;
 }
 
+.form-group.error input,
+.form-group.error textarea {
+  border-color: #eb4040; 
+}
+
 .form input:hover, .form textarea:hover {
-  outline: 1px solid #22c728;
+  outline: 1px solid #6a6d6b;
   border: none;
 }
 
 .form-group textarea {
   resize: none;
 }
+
+.textarea-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.under-textarea-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.character-count {
+  margin-left: auto;
+  padding-top: 5px;
+  font-size: 14px;
+  color: #6a6d6b;
+  /* text-align: right; */
+}
+
+.error-message {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #eb4040;
+  /* text-align: left; */
+}
+
+/* кнопки */
 
 .buttons button {
   display: inline-block;
@@ -75,17 +107,92 @@ button {
 }
 
 .cancel-button {
-  background-color: #9a9999;
+  background-color: none;
+  border: 1px solid #4a4949;
+  color: #464545;
 }
 
 .cancel-button:hover {
-  background-color: #838181;
+  background-color: none;
+  border: 1px solid #000000;
+  color: #000000;
 }
 
 .submit-button {
-  background-color: #22c728;
+  background-color: #337bd3;
 }
 
 .submit-button:hover {
-  background-color: #26b62b;
+  background-color: #3f89e4;
+}
+
+/* анкета после отправки */
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70%;
+  margin: auto;
+  max-width: 90vw;
+  padding-bottom: 35px;
+  width: 640px;
+  border: 1px solid #f2efef;
+  border-radius: 5px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+
+
+.info-title {
+  font-size: 24px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.info-wrapper-short {
+  display: flex;
+  align-items: center;
+  width: 500px;
+
+}
+
+.info-wrapper-short a {
+  margin-bottom: 0;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.info-wrapper-short a:hover {
+  text-decoration: none;
+}
+
+.info-field-title-short {
+  display: flex;
+  font-weight: 500;
+  margin-right: 20px;
+  
+}
+
+.info-field-short {
+  font-weight: 300;
+}
+
+.info-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 50%;
+  width: 500px;
+}
+
+.info-field-title {
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.info-field {
+  font-weight: 300;
 }
