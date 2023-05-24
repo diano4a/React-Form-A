@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { formatPhoneNumber } from "../../helpers/phoneInputMask";
 import {
    validateFirstName,
@@ -43,36 +43,38 @@ const InitialState = {
   isSubmited: false,
 };
 
-class Form extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {...InitialState};
-  }
+const Form = () => {
+  const [state, setState] = useState({...InitialState});
 
-  onChange = (event) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
-    const { characterCount } = this.state;
+    const { characterCount } = state;
     const updatedCharacterCount = { ...characterCount, [name]: value.length };
-    this.setState({ [name]: value, characterCount: updatedCharacterCount });
-  }
+    setState(prevState => ({
+      ...prevState,
+      [name]: value,
+      characterCount: updatedCharacterCount
+    }));
+  };
 
-  handleCancel = () => {
-    this.setState(InitialState);
-  }
+  const handleCancel = () => {
+    setState({ ...InitialState });
+  };
 
-  handlePhoneChange = (event) => {
+  const handlePhoneChange = (event) => {
     const { value } = event.target;
     const formattedValue = formatPhoneNumber(value);
 
     const maxLength = 12;
     const slicedValue = formattedValue.slice(0, maxLength);
 
-    this.setState({
-      phone: slicedValue,
-    })
-  }
+    setState(prevState => ({
+      ...prevState,
+      phone: slicedValue
+    }));
+  };
 
-  validateForm = () => {
+  const validateForm = () => {
     const {
       firstName,
       lastName,
@@ -83,7 +85,7 @@ class Form extends Component {
       stack,
       lastProject,
       characterCount,
-    } = this.state;
+    } = state;
 
     const errors = { ...InitialState.errors };
 
@@ -92,167 +94,179 @@ class Form extends Component {
     Object.assign(errors, validateBirthDate(birthDate));
     Object.assign(errors, validatePhone(phone));
     Object.assign(errors, validateWebsite(website));
-    Object.assign(errors, validateAbout(about, characterCount ));
+    Object.assign(errors, validateAbout(about, characterCount));
     Object.assign(errors, validateStack(stack, characterCount));
     Object.assign(errors, validateLastProject(lastProject, characterCount));
 
-    this.setState({ errors });
+    setState(prevState => ({
+      ...prevState,
+      errors
+    }));
 
     const hasErrors = Object.keys(errors).length > 0;
     if (!hasErrors) {
-      this.setState({ isSubmited: true });
+      setState(prevState => ({
+        ...prevState,
+        isSubmited: true
+      }));
+
+      return {
+        firstName,
+        lastName,
+        birthDate,
+        phone,
+        website,
+        about,
+        stack,
+        lastProject,
+      };
     } else {
-      return null;
+      return {};
     }
   };
 
-  handleSubmit = (event) => {
-    const { isSubmited } = this.state;
+  const handleSubmit = (event) => {
+    const { isSubmited } = state;
     event.preventDefault();
     if (!isSubmited) {
-      const formData = this.validateForm();
+      const formData = validateForm();
       if (formData) {
-        this.setState({ isSubmited: true, ...formData });
-      } else {
-        return null;
+        setState(prevState => ({
+          ...prevState,
+          isSubmited: true,
+          ...formData
+        }));
       }
-    }
+    }  
   };
 
-  render() {
-    const {
-      firstName,
-      lastName,
-      birthDate,
-      phone,
-      website,
-      about,
-      stack,
-      lastProject,
-      characterCount,
-      errors,
-      isSubmited
-    } = this.state;
+  const {
+    firstName,
+    lastName,
+    birthDate,
+    phone,
+    website,
+    about,
+    stack,
+    lastProject,
+    characterCount,
+    errors,
+    isSubmited
+  } = state;
 
-    
-    if (isSubmited) {
-      return (
-        <div>
-          <ProfileInfo
-            firstName={firstName}
-            lastName={lastName}
-            birthDate={birthDate}
-            phone={phone}
-            website={website}
-            about={about}
-            stack={stack}
-            lastProject={lastProject}
-          />
-          
+  if (isSubmited) {
+    return (
+      <div>
+        <ProfileInfo
+          firstName={firstName}
+          lastName={lastName}
+          birthDate={birthDate}
+          phone={phone}
+          website={website}
+          about={about}
+          stack={stack}
+          lastProject={lastProject}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <form action="" className="form" onSubmit={handleSubmit}>
+        <h2 className="form-title">Создание анкеты</h2>
+
+        <Input
+          name="firstName"
+          value={firstName}
+          onChange={handleChange}
+          labelText="Имя"
+          type="text"
+          placeholder="Введите имя"
+          errors={errors.firstName || ""}
+        />
+
+        <Input
+          name="lastName"
+          value={lastName}
+          onChange={handleChange}
+          labelText="Фамилия"
+          type="text"
+          placeholder="Введите фамилию"
+          errors={errors.lastName || ""}
+        />
+
+        <Input
+          name="birthDate"
+          value={birthDate}
+          onChange={handleChange}
+          labelText="Дата рождения"
+          type="date"
+          placeholder=""
+          errors={errors.birthDate || ""}
+        />
+
+        <Input
+          name="phone"
+          value={phone}
+          onChange={handlePhoneChange}
+          labelText="Номер телефона"
+          type="text"
+          placeholder="Введите номер телефона"
+          errors={errors.phone || ""}
+        />
+
+        <Input
+          name="website"
+          value={website}
+          onChange={handleChange}
+          labelText="Сайт"
+          type="text"
+          placeholder="Введите сайт"
+          errors={errors.website || ""}
+        />
+
+        <TextArea
+          name="about"
+          labelText="О себе"
+          value={about}
+          onChange={handleChange}
+          placeholder="Введите информацию о себе"
+          errors={errors.about || ""}
+          characterCount={characterCount}
+        />
+
+        <TextArea
+          name="stack"
+          labelText="Стек технологий"
+          value={stack}
+          onChange={handleChange}
+          placeholder="Введите стек технологий"
+          errors={errors.stack || ""}
+          characterCount={characterCount}
+        />
+
+        <TextArea
+          name="lastProject"
+          labelText="Последний проект"
+          value={lastProject}
+          onChange={handleChange}
+          placeholder="Введите информацию о последнем проекте"
+          errors={errors.lastProject || ""}
+          characterCount={characterCount}
+        />
+
+        <div className="buttons">
+          <button type="button" className="cancel-button" onClick={handleCancel}>
+            Отмена
+          </button>
+          <button type="submit" className="submit-button">
+            Сохранить
+          </button>
         </div>
-      
-      );
 
-    } else {
-
-      return (
-        <form action='' className="form" onSubmit={this.handleSubmit}>
-          
-          <h2 className="form-title">Создание анкеты</h2>
-
-          <Input
-            name='firstName'
-            value={firstName}
-            onChange={this.onChange}
-            labelText="Имя"
-            type='text'
-            placeholder='Введите имя'
-            errors={errors.firstName || ''}
-          />
-
-          <Input
-            name='lastName'
-            value={lastName}
-            onChange={this.onChange}
-            labelText="Фамилия"
-            type='text'
-            placeholder='Введите фамилию'
-            errors={errors.lastName || ''}
-          />
-
-          <Input
-            name='birthDate'
-            value={birthDate}
-            onChange={this.onChange}
-            labelText="Дата рождения"
-            type='date'
-            placeholder=''
-            errors={errors.birthDate || ''}          />
-
-          <Input
-            name='phone'
-            value={phone}
-            onChange={this.handlePhoneChange}
-            labelText="Номер телефона"
-            type='text'
-            placeholder='Введите номер телефона'
-            errors={errors.phone || ''}          />
-          
-          <Input
-            name='website'
-            value={website}
-            onChange={this.onChange}
-            labelText='Сайт'
-            type='text'
-            placeholder='Введите сайт'
-            errors={errors.website || ''}
-          />
-
-          <TextArea
-            name='about'
-            labelText='О себе'
-            value={about}
-            onChange={this.onChange}
-            placeholder='Введите информацию о себе'
-            errors={errors.about || ''}
-            characterCount={characterCount}
-          />
-
-          <TextArea
-            name='stack'
-            labelText='Стек технологий'
-            value={stack}
-            onChange={this.onChange}
-            placeholder='Введите стек технологий'
-            errors={errors.stack || ''}
-            characterCount={characterCount}
-          />
-
-          <TextArea
-            name='lastProject'
-            labelText='Последний проект'
-            value={lastProject}
-            onChange={this.onChange}
-            placeholder='Введите информацию о последнем проекте'
-            errors={errors.lastProject || ''}
-            characterCount={characterCount}
-          />
-
-
-          <div className="buttons">
-            <button type="button" className="cancel-button" onClick={this.handleCancel}>
-              Отмена
-            </button>
-            <button type="submit" className="submit-button">
-              Сохранить
-            </button>
-          </div>
-        </form>
-      )
-    }
-    
+      </form>
+    );
   }
 
-}
+};
 
 export default Form;
