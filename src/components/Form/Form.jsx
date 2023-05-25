@@ -1,19 +1,10 @@
 import React, { useState } from "react";
 import { formatPhoneNumber } from "../../helpers/phoneInputMask";
-import {
-   validateFirstName,
-   validateLastName,
-   validateBirthDate,
-   validatePhone,
-   validateWebsite,
-   validateAbout, 
-   validateStack,
-   validateLastProject,
-  } from "../../helpers/validators";
+import { validate } from "../../helpers/validators";
 import Input from "../Input/Input";
 import TextArea from "../TextArea/TextArea";
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
-import './form.css'
+import './form.css';
 
 
 const InitialState = {
@@ -40,11 +31,25 @@ const InitialState = {
     stack: '',
     lastProject: ''
   },
-  isSubmited: false,
+  isSubmitted: false,
 };
 
 const Form = () => {
-  const [state, setState] = useState({...InitialState});
+  const [state, setState] = useState({ ...InitialState });
+
+  const {
+    firstName,
+    lastName,
+    birthDate,
+    phone,
+    website,
+    about,
+    stack,
+    lastProject,
+    characterCount,
+    errors,
+    isSubmitted
+  } = state;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -75,7 +80,7 @@ const Form = () => {
   };
 
   const validateForm = () => {
-    const {
+    const formData = {
       firstName,
       lastName,
       birthDate,
@@ -84,77 +89,27 @@ const Form = () => {
       about,
       stack,
       lastProject,
-      characterCount,
-    } = state;
+    };
 
-    const errors = { ...InitialState.errors };
+    const errors = validate(formData, characterCount);
 
-    Object.assign(errors, validateFirstName(firstName));
-    Object.assign(errors, validateLastName(lastName));
-    Object.assign(errors, validateBirthDate(birthDate));
-    Object.assign(errors, validatePhone(phone));
-    Object.assign(errors, validateWebsite(website));
-    Object.assign(errors, validateAbout(about, characterCount));
-    Object.assign(errors, validateStack(stack, characterCount));
-    Object.assign(errors, validateLastProject(lastProject, characterCount));
-
-    setState(prevState => ({
-      ...prevState,
-      errors
-    }));
-
-    const hasErrors = Object.keys(errors).length > 0;
-    if (!hasErrors) {
-      setState(prevState => ({
-        ...prevState,
-        isSubmited: true
-      }));
-
-      return {
-        firstName,
-        lastName,
-        birthDate,
-        phone,
-        website,
-        about,
-        stack,
-        lastProject,
-      };
-    } else {
-      return {};
-    }
+    return errors;
   };
 
   const handleSubmit = (event) => {
-    const { isSubmited } = state;
     event.preventDefault();
-    if (!isSubmited) {
-      const formData = validateForm();
-      if (formData) {
-        setState(prevState => ({
-          ...prevState,
-          isSubmited: true,
-          ...formData
-        }));
+    if (!isSubmitted) {
+      const errors = validateForm();
+      if (Object.keys(errors).length === 0) {
+        setState(prevState => ({ ...prevState, isSubmitted: true }));
+      } else {
+        setState(prevState => ({ ...prevState, errors }));
       }
-    }  
+    }
   };
 
-  const {
-    firstName,
-    lastName,
-    birthDate,
-    phone,
-    website,
-    about,
-    stack,
-    lastProject,
-    characterCount,
-    errors,
-    isSubmited
-  } = state;
 
-  if (isSubmited) {
+  if (isSubmitted) {
     return (
       <div>
         <ProfileInfo
