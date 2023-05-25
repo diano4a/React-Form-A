@@ -1,15 +1,6 @@
 import React, { Component } from "react";
 import { formatPhoneNumber } from "../../helpers/phoneInputMask";
-import {
-   validateFirstName,
-   validateLastName,
-   validateBirthDate,
-   validatePhone,
-   validateWebsite,
-   validateAbout, 
-   validateStack,
-   validateLastProject,
-  } from "../../helpers/validators";
+import { validate } from "../../helpers/validators";
 import Input from "../Input/Input";
 import TextArea from "../TextArea/TextArea";
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
@@ -85,36 +76,31 @@ class Form extends Component {
       characterCount,
     } = this.state;
 
-    const errors = { ...InitialState.errors };
-
-    Object.assign(errors, validateFirstName(firstName));
-    Object.assign(errors, validateLastName(lastName));
-    Object.assign(errors, validateBirthDate(birthDate));
-    Object.assign(errors, validatePhone(phone));
-    Object.assign(errors, validateWebsite(website));
-    Object.assign(errors, validateAbout(about, characterCount ));
-    Object.assign(errors, validateStack(stack, characterCount));
-    Object.assign(errors, validateLastProject(lastProject, characterCount));
-
-    this.setState({ errors });
-
-    const hasErrors = Object.keys(errors).length > 0;
-    if (!hasErrors) {
-      this.setState({ isSubmited: true });
-    } else {
-      return null;
+    const formData = {
+      firstName,
+      lastName,
+      birthDate,
+      phone,
+      website,
+      about,
+      stack,
+      lastProject,
     }
+
+    const errors = validate(formData, characterCount);
+
+    return errors;
   };
 
   handleSubmit = (event) => {
     const { isSubmited } = this.state;
     event.preventDefault();
     if (!isSubmited) {
-      const formData = this.validateForm();
-      if (formData) {
-        this.setState({ isSubmited: true, ...formData });
+      const errors = this.validateForm();
+      if (Object.keys(errors).length === 0) {
+        this.setState({ isSubmited: true });
       } else {
-        return null;
+        this.setState({ errors });
       }
     }
   };
@@ -187,7 +173,8 @@ class Form extends Component {
             labelText="Дата рождения"
             type='date'
             placeholder=''
-            errors={errors.birthDate || ''}          />
+            errors={errors.birthDate || ''}  
+          />
 
           <Input
             name='phone'
@@ -196,7 +183,8 @@ class Form extends Component {
             labelText="Номер телефона"
             type='text'
             placeholder='Введите номер телефона'
-            errors={errors.phone || ''}          />
+            errors={errors.phone || ''} 
+          />
           
           <Input
             name='website'

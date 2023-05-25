@@ -1,96 +1,54 @@
-export const validateFirstName = (firstName) => {
+export const validate = (formData, characterCount) => {
   const nameRegex = /^[A-ZА-ЯЁ].*$/;
+  const websiteRegex = /^https:\/\/.+/;
+
   const errors = {};
 
-  if (!firstName.trim()) {
+  if (!formData.firstName.trim()) {
     errors.firstName = 'Поле пустое. Заполните, пожалуйста';
-  } else if (!nameRegex.test(firstName)) {
+  } else if (!nameRegex.test(formData.firstName)) {
     errors.firstName = 'Первая буква должна быть заглавной';
   }
-  return errors;
-};
 
-export const validateLastName = (lastName) => {
-  const nameRegex = /^[A-ZА-ЯЁ].*$/;
-  const errors = {};
-
-  if (!lastName.trim()) {
+  if (!formData.lastName.trim()) {
     errors.lastName = 'Поле пустое. Заполните, пожалуйста';
-  } else if (!nameRegex.test(lastName)) {
+  } else if (!nameRegex.test(formData.lastName)) {
     errors.lastName = 'Первая буква должна быть заглавной';
   }
 
-  return errors;
-}
-
-export const validateBirthDate = (birthDate) => {
-  const errors = {};
-
-  if (!birthDate.trim()) {
+  if (!formData.birthDate.trim()) {
     errors.birthDate = 'Поле пустое. Заполните, пожалуйста';
   }
 
-  return errors;
-}
-
-export const validatePhone = (phone) => {
-  const errors = {};
-
-  if (!phone.trim()) {
+  if (!formData.phone.trim()) {
     errors.phone = 'Поле пустое. Заполните, пожалуйста';
-  }
-   else if (phone.length !== 12) {
+  } else if (formData.phone.length !== 12) {
     errors.phone = 'Неверный формат номера телефона';
   }
 
-  return errors;
-}
-
-
-export const validateWebsite = (website) => {
-  const websiteRegex = /^https:\/\/.+/;
-  const errors = {};
-
-  if (!website.trim()) {
+  if (!formData.website.trim()) {
     errors.website = 'Поле пустое. Заполните, пожалуйста.';
-  } else if (!websiteRegex.test(website)) {
-    errors.website = 'Неверный формат сайта'
+  } else if (!websiteRegex.test(formData.website)) {
+    errors.website = 'Неверный формат сайта';
   }
 
-  return errors;
-}
-
-export const validateAbout = (about, characterCount) => {
-  const errors = {};
-
-  if (!about.trim()) {
+  if (!formData.about.trim()) {
     errors.about = 'Поле пустое. Заполните, пожалуйста';
   } else if (characterCount.about > 600) {
-    errors.about = 'Превышен лимит символов в поле'
+    errors.about = 'Превышен лимит символов в поле';
   }
 
-  return errors;
-}
-
-export const validateStack = (stack, characterCount) => {
-  const errors = {};
-
-  if (!stack.trim()) {
+  if (!formData.stack.trim()) {
     errors.stack = 'Поле пустое. Заполните, пожалуйста';
   } else if (characterCount.stack > 600) {
-    errors.stack = 'Превышен лимит символов в поле'
+    errors.stack = 'Превышен лимит символов в поле';
   }
 
-  return errors;
-}
-
-export const validateLastProject = (lastProject, characterCount) => {
-  const errors = {};
-
-  if (!lastProject.trim()) {
+  if (!formData.lastProject.trim()) {
     errors.lastProject = 'Поле пустое. Заполните, пожалуйста';
   } else if (characterCount.lastProject > 600) {
-    errors.lastProject = 'Превышен лимит символов в поле'
+    errors.lastProject = 'Превышен лимит символов в поле';
   }
+
   return errors;
-}
+};
